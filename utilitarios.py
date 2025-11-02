@@ -1,5 +1,5 @@
-def printMapa(letrasLinhas, mapaJ, n):
-    print(f'  |Mapa do Jogador {n}|')
+def printMapa(letrasLinhas, mapaJ, jogador):
+    print(f'  |Mapa do Jogador {jogador}|')
     print('  +-----------------+')
     print('  |', end=' ')
     for num in range(1, len(letrasLinhas) + 1):
@@ -10,7 +10,7 @@ def printMapa(letrasLinhas, mapaJ, n):
         print(*letrasLinhas[i], '|', *mapaJ[i], '|')
     print('--+-----------------+')
 
-def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, n):
+def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
     barcoEscolha = int(input('Sua escolha (1 a 5): '))
     if 1 <= barcoEscolha <= 5 and barcoEscolha not in barcosUsadosJ:
         while True:
@@ -35,8 +35,8 @@ def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, n
                 print("Posição inválida ou ocupada! Tente novamente.\n")
     elif barcoEscolha in barcosUsadosJ:
         print('Este barco já foi utilizado')
-        escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, n)
-    printMapa(letrasLinhas, mapaJ, n)
+        escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
+    printMapa(letrasLinhas, mapaJ, jogador)
 
 def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, barcoEscolha):
     tamanho = int(dictValores[f'b{barcoEscolha}'][0])
@@ -72,16 +72,19 @@ def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, barcoEscolha)
             mapaJ[idx + t][col] = 'H'
     return True
 
-def colocarBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, n):
+def colocarBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
     cont = 0
     print('Escolha seu barco: ')
     for n in dictValores:
-        print(f'{cont+1}. {listaNomes[cont]}, tamanho: {dictValores[n][0]}')
+        if cont+1 not in barcosUsadosJ:
+            print(f'{cont+1}. {listaNomes[cont]}, tamanho: {dictValores[n][0]}')
+        else:
+            print(f'{cont + 1}. {listaNomes[cont]}, tamanho: {dictValores[n][0]}   ✅')
         cont += 1
-    escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, n)
+    escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
 
-def jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, n):
-    printMapa(letrasLinhas, mapaJ, n)
+def jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
+    printMapa(letrasLinhas, mapaJ, jogador)
     for s in range(len(barcosValores)):
-        colocarBarco(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, n)
-    printMapa(letrasLinhas, mapaJ, n)
+        colocarBarco(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
+    printMapa(letrasLinhas, mapaJ, jogador)
