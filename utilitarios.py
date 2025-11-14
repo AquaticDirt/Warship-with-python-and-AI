@@ -113,19 +113,21 @@ def tem_navios(mapa):
 
 def inicioRodada(letrasLinhas, mapaAtacado):
     turno = 1
+    vitoriaJ
     while vitoriaJ == 0:
         if not tem_navios(mapaAtacado):
             if turno == 1:
                 vitoriaJ = 2
             else:
                 vitoriaJ = 1
+            return vitoriaJ
         else:
-            vitoriaJ = 0
             ataqueJ(letrasLinhas, turno, mapaAtacado)
             if turno == 1:
                 turno = 2
             else:
                 turno = 1
+            return vitoriaJ
 
 def clear_terminal():
     if os.name == 'nt':

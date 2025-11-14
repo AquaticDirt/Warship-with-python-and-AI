@@ -14,4 +14,10 @@ input("Press enter to switch players")
 jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ2, mapaJ2, 2)
 clear_terminal()
 
-inicioRodada(letrasLinhas, )
+rodada = 1
+while inicioRodada(letrasLinhas, 0) == 0:
+    rodada += 1
+    if rodada % 2 != 0:
+        inicioRodada(letrasLinhas, mapaJ2)
+    else:
+        inicioRodada(letrasLinhas, mapaJ1)
