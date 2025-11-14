@@ -1,3 +1,5 @@
+import os
+
 def printMapa(letrasLinhas, mapaJ, jogador):
     print(f'  |Mapa do Jogador {jogador}|')
     print('  +-----------------+')
@@ -11,10 +13,13 @@ def printMapa(letrasLinhas, mapaJ, jogador):
     print('--+-----------------+')
 
 def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
-    barcoEscolha = int(input('Sua escolha (1 a 5): '))
-    if 1 <= barcoEscolha <= 5 and barcoEscolha not in barcosUsadosJ:
+    barcoEscolha = input('Sua escolha (1 a 5): ')
+    while barcoEscolha not in {'1','2','3','4','5'}:
+        barcoEscolha = input('Sua escolha (1 a 5): ')
+    escolhaInt = int(barcoEscolha)
+    if 1 <= escolhaInt <= 5 and escolhaInt not in barcosUsadosJ:
         while True:
-            barcoPosicao = input(f'Escolha uma posição inicial para o seu barco {barcoEscolha}. {listaNomes[barcoEscolha-1]} (Ex.: D4): ').upper()
+            barcoPosicao = input(f'Escolha uma posição inicial para o seu barco {escolhaInt}. {listaNomes[escolhaInt-1]} (Ex.: D4): ').upper()
             idx = 0
             if barcoPosicao[0] in letrasLinhas:
                 while barcoPosicao[0] != letrasLinhas[idx]:
@@ -22,24 +27,24 @@ def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, j
             barcoDir = input('Escolha a direção do barco (V para vertical, H para horizontal): ').upper()
             sucesso = False
             if barcoDir == 'H':
-                sucesso = barcoDirH(dictValores, barcoPosicao, mapaJ, idx, barcoEscolha)
+                sucesso = barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt)
             elif barcoDir == 'V':
-                sucesso = barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, barcoEscolha)
+                sucesso = barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt)
             else:
                 print("Direção inválida. Use V ou H.")
                 continue
             if sucesso:
-                barcosUsadosJ.append(barcoEscolha)
+                barcosUsadosJ.append(escolhaInt)
                 break
             else:
                 print("Posição inválida ou ocupada! Tente novamente.\n")
-    elif barcoEscolha in barcosUsadosJ:
+    elif escolhaInt in barcosUsadosJ:
         print('Este barco já foi utilizado')
         escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
     printMapa(letrasLinhas, mapaJ, jogador)
 
-def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, barcoEscolha):
-    tamanho = int(dictValores[f'b{barcoEscolha}'][0])
+def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt):
+    tamanho = int(dictValores[f'b{escolhaInt}'][0])
     inicio_col = int(barcoPosicao[1]) - 1
     if inicio_col + tamanho > len(mapaJ[idx]):
         return False
@@ -55,8 +60,8 @@ def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, barcoEscolha):
             mapaJ[idx][inicio_col + t] = '='
     return True
 
-def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, barcoEscolha):
-    tamanho = int(dictValores[f'b{barcoEscolha}'][0])
+def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt):
+    tamanho = int(dictValores[f'b{escolhaInt}'][0])
     col = int(barcoPosicao[1]) - 1
     if idx + tamanho > len(letrasLinhas):
         return False
@@ -100,20 +105,26 @@ def ataqueJ(jogador, letrasLinhas, mapaJ):
     else:
         mapaJ[index][ataquePos[1]] = '💥'
 
-def tem_navios(mapaJ):
+def tem_navios(mapa):
     partes = {"V", "H", "A", "<", ">", "="}
-    return any(cell in partes for row in mapaJ for cell in row)
+    return any(cell in partes for row in mapa for cell in row)
 
 def inicioJogo(letrasLinhas, mapaJ):
-    if not tem_navios(mapaJ):
-        if mapaJ == 1:
+    turno = 1
+    if not tem_navios(turno):
+        if turno == 1:
             print('Vitória do jogador 2')
         else:
             print('Vitória do jogador 1')
-    turno = 1
     if turno == 1:
         ataqueJ(turno, letrasLinhas, mapaJ)
         turno = 2
     else:
         ataqueJ(turno, letrasLinhas, mapaJ)
         turno = 1
+
+def clear_terminal():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')

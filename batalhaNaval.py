@@ -11,4 +11,4 @@ barcosUsadosJ2 = []
 jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ1, mapaJ1, 1)
 jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ2, mapaJ2, 2)
 
-
+inicioJogo(letrasLinhas, )
