@@ -88,3 +88,32 @@ def jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, joga
     for s in range(len(barcosValores)):
         colocarBarco(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
     printMapa(letrasLinhas, mapaJ, jogador)
+
+def ataqueJ(jogador, letrasLinhas, mapaJ):
+    ataquePos = input('Escolha a posiçao do ataque (Ex.: D4):')
+    index = 0
+    if ataquePos[0] in letrasLinhas:
+        while ataquePos[0] != letrasLinhas[index]:
+            index += 1
+    if mapaJ[index][ataquePos[1]] == '~':
+        mapaJ[index][ataquePos[1]] = '🌊'
+    else:
+        mapaJ[index][ataquePos[1]] = '💥'
+
+def tem_navios(mapaJ):
+    partes = {"V", "H", "A", "<", ">", "="}
+    return any(cell in partes for row in mapaJ for cell in row)
+
+def inicioJogo(letrasLinhas, mapaJ):
+    if not tem_navios(mapaJ):
+        if mapaJ == 1:
+            print('Vitória do jogador 2')
+        else:
+            print('Vitória do jogador 1')
+    turno = 1
+    if turno == 1:
+        ataqueJ(turno, letrasLinhas, mapaJ)
+        turno = 2
+    else:
+        ataqueJ(turno, letrasLinhas, mapaJ)
+        turno = 1
