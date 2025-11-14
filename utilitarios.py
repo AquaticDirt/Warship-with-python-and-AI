@@ -1,6 +1,7 @@
 import os
 
 def printMapa(letrasLinhas, mapaJ, jogador):
+    clear_terminal()
     print(f'  |Mapa do Jogador {jogador}|')
     print('  +-----------------+')
     print('  |', end=' ')
@@ -94,34 +95,37 @@ def jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, joga
         colocarBarco(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
     printMapa(letrasLinhas, mapaJ, jogador)
 
-def ataqueJ(jogador, letrasLinhas, mapaJ):
+def ataqueJ(letrasLinhas, jogador, mapaAtacado):
     ataquePos = input('Escolha a posiçao do ataque (Ex.: D4):')
     index = 0
     if ataquePos[0] in letrasLinhas:
         while ataquePos[0] != letrasLinhas[index]:
             index += 1
-    if mapaJ[index][ataquePos[1]] == '~':
-        mapaJ[index][ataquePos[1]] = '🌊'
+    if mapaAtacado[index][ataquePos[1]] == '~':
+        mapaAtacado[index][ataquePos[1]] = '🌊'
     else:
-        mapaJ[index][ataquePos[1]] = '💥'
+        mapaAtacado[index][ataquePos[1]] = '💥'
+    printMapa(letrasLinhas, mapaAtacado, jogador)
 
 def tem_navios(mapa):
     partes = {"V", "H", "A", "<", ">", "="}
     return any(cell in partes for row in mapa for cell in row)
 
-def inicioJogo(letrasLinhas, mapaJ):
+def inicioRodada(letrasLinhas, mapaAtacado):
     turno = 1
-    if not tem_navios(turno):
-        if turno == 1:
-            print('Vitória do jogador 2')
+    while vitoriaJ == 0:
+        if not tem_navios(mapaAtacado):
+            if turno == 1:
+                vitoriaJ = 2
+            else:
+                vitoriaJ = 1
         else:
-            print('Vitória do jogador 1')
-    if turno == 1:
-        ataqueJ(turno, letrasLinhas, mapaJ)
-        turno = 2
-    else:
-        ataqueJ(turno, letrasLinhas, mapaJ)
-        turno = 1
+            vitoriaJ = 0
+            ataqueJ(letrasLinhas, turno, mapaAtacado)
+            if turno == 1:
+                turno = 2
+            else:
+                turno = 1
 
 def clear_terminal():
     if os.name == 'nt':

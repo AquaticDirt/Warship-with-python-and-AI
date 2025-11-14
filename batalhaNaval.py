@@ -9,6 +9,9 @@ barcosUsadosJ1 = []
 barcosUsadosJ2 = []
 
 jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ1, mapaJ1, 1)
+clear_terminal()
+input("Press enter to switch players")
 jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ2, mapaJ2, 2)
+clear_terminal()
 
-inicioJogo(letrasLinhas, )
+inicioRodada(letrasLinhas, )
