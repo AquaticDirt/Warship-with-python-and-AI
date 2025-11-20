@@ -113,7 +113,7 @@ def tem_navios(mapa):
 
 def inicioRodada(letrasLinhas, mapaAtacado):
     turno = 1
-    vitoriaJ
+    vitoriaJ = 0
     while vitoriaJ == 0:
         if not tem_navios(mapaAtacado):
             if turno == 1:
