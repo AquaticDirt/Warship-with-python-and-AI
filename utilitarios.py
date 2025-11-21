@@ -125,7 +125,7 @@ def inicioJogo(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJs, mapaJs,
     return
 
 def tem_navios(mapaJ):
-    partes = {"V", "H", "A", "<", ">", "="}
+    partes = {" V", " H", " A", " <", " >", " ="}
     return any(cell in partes for row in mapaJ for cell in row)
 
 def inicioRodada(letrasLinhas, barcosPosJ, mapaAtacado, jogadorAtacado, mapaAtacante, jogadorAtacante):
@@ -180,8 +180,11 @@ def ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, jogadorAtacado, mapaAtacante,
     else:
         print('Posição inválida, tente novamente')
         ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, jogadorAtacado, mapaAtacante, jogadorAtacante)
+    if mapaAtacado[idx][int(ataquePos[0]) - 1] in ['💥', '🌊']:
+        ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, jogadorAtacado, mapaAtacante, jogadorAtacante)
     if f'{ataquePos}' in barcosPosJ:
-        mapaAtacado[idx][ataquePos[1]] = '💥'
+        mapaAtacado[idx][int(ataquePos[1]) - 1] = '💥'
+        barcosPosJ.remove(ataquePos)
     else:
-        mapaAtacado[idx][ataquePos[1]] = '🌊'
+        mapaAtacado[idx][int(ataquePos[1]) - 1] = '🌊'
         printMapaDuplo(letrasLinhas, mapaAtacado, jogadorAtacado, mapaAtacante, jogadorAtacante)
