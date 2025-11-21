@@ -2,18 +2,18 @@ import os
 
 def printMapa(letrasLinhas, mapaJ, jogador):
     clear_terminal()
-    print(f'  |Mapa do Jogador {jogador}|')
-    print('  +-----------------+')
-    print('  |', end=' ')
+    print(f'  |     Mapa do Jogador {jogador}    |')
+    print('  +--------------------------+')
+    print('  |', end='  ')
     for num in range(1, len(letrasLinhas) + 1):
-        print(num, end=' ')
+        print(num, end='  ')
     print('|')
-    print('--+-----------------+')
+    print('--+--------------------------+')
     for i in range(len(mapaJ)):
-        print(*letrasLinhas[i], '|', *mapaJ[i], '|')
-    print('--+-----------------+')
+        print(*letrasLinhas[i], '|', *mapaJ[i], ' |')
+    print('--+--------------------------+')
 
-def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
+def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador, listaPosJ):
     barcoEscolha = input('Sua escolha (1 a 5): ')
     while barcoEscolha not in {'1','2','3','4','5'}:
         barcoEscolha = input('Sua escolha (1 a 5): ')
@@ -28,9 +28,9 @@ def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, j
             barcoDir = input('Escolha a direção do barco (V para vertical, H para horizontal): ').upper()
             sucesso = False
             if barcoDir == 'H':
-                sucesso = barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt)
+                sucesso = barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt, listaPosJ)
             elif barcoDir == 'V':
-                sucesso = barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt)
+                sucesso = barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt, listaPosJ)
             else:
                 print("Direção inválida. Use V ou H.")
                 continue
@@ -41,44 +41,51 @@ def escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, j
                 print("Posição inválida ou ocupada! Tente novamente.\n")
     elif escolhaInt in barcosUsadosJ:
         print('Este barco já foi utilizado')
-        escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
+        escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador, listaPosJ)
     printMapa(letrasLinhas, mapaJ, jogador)
 
-def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt):
+def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt, listaPosJ):
     tamanho = int(dictValores[f'b{escolhaInt}'][0])
     inicio_col = int(barcoPosicao[1]) - 1
     if inicio_col + tamanho > len(mapaJ[idx]):
         return False
     for t in range(tamanho):
-        if mapaJ[idx][inicio_col + t] != '~':
+        if mapaJ[idx][inicio_col + t] != ' .':
             return False
     for t in range(tamanho):
         if t == 0:
-            mapaJ[idx][inicio_col] = '<'
+            mapaJ[idx][inicio_col] = ' <'
+            listaPosJ.append(f'{[idx]}{inicio_col}{escolhaInt}')
         elif t == tamanho - 1:
-            mapaJ[idx][inicio_col + t] = '>'
+            mapaJ[idx][inicio_col + t] = ' >'
+            listaPosJ.append(f'{[idx]}{inicio_col+t}{escolhaInt}')
         else:
-            mapaJ[idx][inicio_col + t] = '='
+            mapaJ[idx][inicio_col + t] = ' ='
+            listaPosJ.append(f'{[idx]}{inicio_col+t}{escolhaInt}')
     return True
 
-def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt):
+def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt, listaPosJ):
     tamanho = int(dictValores[f'b{escolhaInt}'][0])
     col = int(barcoPosicao[1]) - 1
     if idx + tamanho > len(letrasLinhas):
         return False
     for t in range(tamanho):
-        if mapaJ[idx + t][col] != '~':
+        if mapaJ[idx + t][col] != ' .':
             return False
     for t in range(tamanho):
         if t == 0:
-            mapaJ[idx][col] = 'A'
+            mapaJ[idx][col] = ' A'
+            listaPosJ.append(f'{letrasLinhas[idx]}{col}{escolhaInt}')
         elif t == tamanho - 1:
-            mapaJ[idx + t][col] = 'V'
+            mapaJ[idx + t][col] = ' V'
+            listaPosJ.append(f'{letrasLinhas[idx+t]}{col}{escolhaInt}')
         else:
-            mapaJ[idx + t][col] = 'H'
+            mapaJ[idx + t][col] = ' H'
+            listaPosJ.append(f'{letrasLinhas[idx+t]}{col}{escolhaInt}')
+
     return True
 
-def colocarBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
+def colocarBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador, listaPosJ):
     cont = 0
     print('Escolha seu barco: ')
     for n in dictValores:
@@ -87,32 +94,19 @@ def colocarBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jo
         else:
             print(f'{cont + 1}. {listaNomes[cont]}, tamanho: {dictValores[n][0]}   ✅')
         cont += 1
-    escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
+    escolherBarco(listaNomes, dictValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador, listaPosJ)
 
-def jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador):
+def jogadaJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador, listaPosJ):
     printMapa(letrasLinhas, mapaJ, jogador)
     for s in range(len(barcosValores)):
-        colocarBarco(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador)
+        colocarBarco(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJ, mapaJ, jogador, listaPosJ)
     printMapa(letrasLinhas, mapaJ, jogador)
-
-def ataqueJ(letrasLinhas, jogador, mapaAtacado):
-    ataquePos = input('Escolha a posiçao do ataque (Ex.: D4):')
-    index = 0
-    if ataquePos[0] in letrasLinhas:
-        while ataquePos[0] != letrasLinhas[index]:
-            index += 1
-    if mapaAtacado[index][ataquePos[1]] == '~':
-        mapaAtacado[index][ataquePos[1]] = '🌊'
-    else:
-        mapaAtacado[index][ataquePos[1]] = '💥'
-    printMapa(letrasLinhas, mapaAtacado, jogador)
 
 def tem_navios(mapa):
     partes = {"V", "H", "A", "<", ">", "="}
     return any(cell in partes for row in mapa for cell in row)
 
-def inicioRodada(letrasLinhas, mapaAtacado):
-    turno = 1
+def inicioRodada(listaPosJ, letrasLinhas, mapaAtacado, turno):
     vitoriaJ = 0
     while vitoriaJ == 0:
         if not tem_navios(mapaAtacado):
@@ -122,11 +116,7 @@ def inicioRodada(letrasLinhas, mapaAtacado):
                 vitoriaJ = 1
             return vitoriaJ
         else:
-            ataqueJ(letrasLinhas, turno, mapaAtacado)
-            if turno == 1:
-                turno = 2
-            else:
-                turno = 1
+            ataqueJ(listaPosJ, letrasLinhas, turno, mapaAtacado)
             return vitoriaJ
 
 def clear_terminal():
@@ -134,3 +124,21 @@ def clear_terminal():
         os.system('cls')
     else:
         os.system('clear')
+
+def ataqueJ(listaPosJ, letrasLinhas, jogador, mapaAtacado):
+    ataquePos = input('Escolha a posiçao do ataque (Ex.: D4):')
+    idx = 0
+    if ataquePos[0] in letrasLinhas:
+        while ataquePos[0] != letrasLinhas[idx]:
+            idx += 1
+    if f'{ataquePos}' in listaPosJ:
+        print('está')
+
+
+
+
+    if mapaAtacado[idx][ataquePos[1]] == '~':
+        mapaAtacado[idx][ataquePos[1]] = '🌊'
+    else:
+        mapaAtacado[idx][ataquePos[1]] = '💥'
+    printMapa(letrasLinhas, mapaAtacado, jogador)
