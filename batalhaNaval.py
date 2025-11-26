@@ -7,12 +7,15 @@ letrasLinhas = list(string.ascii_uppercase[:8])
 
 mapaJ1 = [[' .']*8 for j in range(len(letrasLinhas))]
 mapaJ2 = [[' .']*8 for i in range(len(letrasLinhas))]
+mapaJ1Oculto = [[' .']*8 for j in range(len(letrasLinhas))]
+mapaJ2Oculto = [[' .']*8 for j in range(len(letrasLinhas))]
 mapaJs = [mapaJ1, mapaJ2]
+mapaJsOculto = [mapaJ1Oculto, mapaJ2Oculto]
 barcosUsadosJ1 = []
 barcosUsadosJ2 = []
 barcosUsadosJs = [barcosUsadosJ1, barcosUsadosJ2]
-barcosPosJ1 = []
-barcosPosJ2 = []
+barcosPosJ1 = {}
+barcosPosJ2 = {}
 barcosPosJs = [barcosPosJ1, barcosPosJ2]
 
-inicioJogo(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJs, mapaJs, barcosPosJs)
+inicioJogo(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJs, mapaJs, mapaJsOculto, barcosPosJs)
