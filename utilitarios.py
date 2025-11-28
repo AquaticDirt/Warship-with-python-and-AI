@@ -58,10 +58,10 @@ def barcoDirH(dictValores, barcoPosicao, mapaJ, idx, escolhaInt, barcosPosJ, let
             barcosPosJ[escolhaInt] = f'{letrasLinhas[idx]}{col+1}'
         elif t == tamanho - 1:
             mapaJ[idx][col + t] = ' >'
-            barcosPosJ[escolhaInt] = f'{letrasLinhas[idx]}{col+1+t}'
+            barcosPosJ[escolhaInt] = f'{barcosPosJ[escolhaInt]},{letrasLinhas[idx]}{col+1+t}'
         else:
             mapaJ[idx][col + t] = ' ='
-            barcosPosJ[escolhaInt] = f'{letrasLinhas[idx]}{col+1+t}'
+            barcosPosJ[escolhaInt] = f'{barcosPosJ[escolhaInt]},{letrasLinhas[idx]}{col+1+t}'
     return True
 
 def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt, barcosPosJ):
@@ -78,10 +78,10 @@ def barcoDirV(letrasLinhas, dictValores, barcoPosicao, mapaJ, idx, escolhaInt, b
             barcosPosJ[escolhaInt] = f'{letrasLinhas[idx]}{col+1}'
         elif t == tamanho - 1:
             mapaJ[idx + t][col] = ' V'
-            barcosPosJ[escolhaInt] = f'{letrasLinhas[idx+t]}{col+1}'
+            barcosPosJ[escolhaInt] = f'{barcosPosJ[escolhaInt]},{letrasLinhas[idx+t]}{col+1}'
         else:
             mapaJ[idx + t][col] = ' H'
-            barcosPosJ[escolhaInt] = f'{letrasLinhas[idx+t]}{col+1}'
+            barcosPosJ[escolhaInt] = f'{barcosPosJ[escolhaInt]},{letrasLinhas[idx+t]}{col+1}'
 
     return True
 
@@ -107,13 +107,14 @@ def inicioJogo(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJs, mapaJs,
     input("Press enter to switch players")
     setupJ(barcosNomes, barcosValores, letrasLinhas, barcosUsadosJs[1], mapaJs[1], 2, barcosPosJs[1])
     clear_terminal()
+    input("Press enter to start game")
     rodada = 1
     while True:
         modRodada = rodada %2
         if modRodada != 0:
-            vitoriaJ = inicioRodada(letrasLinhas, barcosPosJs[modRodada], mapaJs[modRodada], mapaJsOculto[modRodada], modRodada + 1, mapaJs[modRodada], modRodada)
+            vitoriaJ = inicioRodada(letrasLinhas, barcosPosJs[modRodada], mapaJs[modRodada], mapaJsOculto[modRodada], modRodada + 1, mapaJs[0], modRodada)
         else:
-            vitoriaJ = inicioRodada(letrasLinhas, barcosPosJs[modRodada], mapaJs[modRodada], mapaJsOculto[modRodada], modRodada + 1, mapaJs[modRodada], modRodada + 2)
+            vitoriaJ = inicioRodada(letrasLinhas, barcosPosJs[modRodada], mapaJs[modRodada], mapaJsOculto[modRodada], modRodada + 1, mapaJs[1], modRodada + 2)
         rodada += 1
         if vitoriaJ == 1:
             print(f"Jogador {vitoriaJ} venceu!!")
@@ -138,6 +139,7 @@ def inicioRodada(letrasLinhas, barcosPosJ, mapaAtacado, mapaAtacadoOculto, jogad
             return vitoriaJ
         else:
             ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, mapaAtacadoOculto, jogadorAtacado, mapaAtacante, jogadorAtacante)
+            input("press enter to change players")
             return vitoriaJ
 
 def clear_terminal():
@@ -180,11 +182,34 @@ def ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, mapaAtacadoOculto, jogadorAta
         ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, mapaAtacadoOculto, jogadorAtacado, mapaAtacante, jogadorAtacante)
     if mapaAtacadoOculto[idx][col] in ['💥', '🌊']:
         ataqueJ(barcosPosJ, letrasLinhas, mapaAtacado, mapaAtacadoOculto, jogadorAtacado, mapaAtacante, jogadorAtacante)
-    if ataquePos.upper() in barcosPosJ:
-        mapaAtacadoOculto[idx][col] = '💥'
-        mapaAtacado[idx][col] = '💥'
-        barcosPosJ.remove(ataquePos.upper())
-    else:
+    for key, value in barcosPosJ.items():
+        if ataquePos.upper() in value:
+            inBarcosPosJ = True
+            mapaAtacadoOculto[idx][col] = '💥'
+            mapaAtacado[idx][col] = '💥'
+            
+            temp_list = value.split(',')
+            temp_list.remove(ataquePos.upper())
+
+            temp = ''
+            for i in range(len(temp_list)):
+                if (i == len(temp_list) - 1):
+                    temp += str(temp_list[i])
+                else:
+                    temp += str(temp_list[i])+','
+                    
+            barcosPosJ[key] = temp
+            
+            if (len(barcosPosJ[key]) == 0):
+                print(f"\n\n\n NAVIO {key} AFUNDADO \n\n\n")
+            
+            
+            break
+        else:
+            inBarcosPosJ = False
+    if inBarcosPosJ == False:
         mapaAtacadoOculto[idx][col] = '🌊'
         mapaAtacado[idx][col] = '🌊'
-        printMapaDuplo(letrasLinhas, mapaAtacadoOculto, jogadorAtacado, mapaAtacante, jogadorAtacante)
+
+
+    printMapaDuplo(letrasLinhas, mapaAtacadoOculto, jogadorAtacado, mapaAtacante, jogadorAtacante)
